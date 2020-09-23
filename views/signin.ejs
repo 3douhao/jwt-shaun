@@ -1,0 +1,45 @@
+<%- include('partials/header') -%>
+<form>
+  <h2>Sign In</h2>
+  <label for='email'>Email</label>
+  <input type="text" name='email' required/>
+  <div class='email error'></div>
+  <label for='password'>Password</label>
+  <input type="password" name='password' required/>
+  <div class='error password'></div>
+  <button>SignIn</button>
+</form>
+<script src='https://unpkg.com/axios/dist/axios.min.js'></script>
+<script>
+  const form = document.querySelector('form')
+  const emailErrorDiv = document.querySelector('.email.error')
+  const passwordErrorDiv = document.querySelector('.password.error')
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    emailErrorDiv.textContent = ''
+    passwordErrorDiv.textContent = ''
+
+    // get values
+    const email = form.email.value
+    const password = form.password.value
+    try {
+      const res = await axios.post('/signin', {
+        email, password
+      })
+      console.log(res)
+      if (res.data.errors) {
+        emailErrorDiv.textContent = res.data.errors.email
+        passwordErrorDiv.textContent = res.data.errors.password
+      }
+      if (res.data.user) {
+        location.assign('/')
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
+  })
+
+</script>
+<%- include('partials/footer') -%>
